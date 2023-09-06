@@ -13,9 +13,10 @@ if ($conn->connect_error) {
 }
 
 // Query to retrieve products from the database
-$sql = "SELECT p.id, p.name AS product_name, p.description, p.price, c.name AS category_name
+$sql = "SELECT p.id, p.name AS product_name, p.description, p.price, c.name AS category_name, p.image_url
         FROM products AS p
         JOIN categories AS c ON p.category_id = c.id";
+
 $result = $conn->query($sql);
 
 // Initialize an empty array to store products
@@ -45,6 +46,7 @@ $conn->close();
             <th>Product Name</th>
             <th>Description</th>
             <th>Price</th>
+            <th>Image</th> 
             <th>Category</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -57,6 +59,7 @@ $conn->close();
             echo "<td>" . $product['product_name'] . "</td>";
             echo "<td>" . $product['description'] . "</td>";
             echo "<td>" . $product['price'] . "</td>";
+            echo "<td><img src='" . $product['image_url'] . "' alt='Product Image' style='max-width: 100px; max-height: 100px;'></td>";
             echo "<td>" . $product['category_name'] . "</td>";
             echo "<td><a href='edit_product.php?id=" . $product['id'] . "'>Edit</a></td>";
             echo "<td><a href='delete_product.php?id=" . $product['id'] . "'>Delete</a></td>";

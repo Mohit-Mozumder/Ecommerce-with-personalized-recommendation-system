@@ -78,7 +78,7 @@ if (!isset($_SESSION['username'])) {
 <body>
     <div class="header">
       Welcome, <?php echo $_SESSION['username']; ?>
-        <a class="logout" href="logout.php">Logout</a>
+        <a class="logout" href="process_logout.php">Logout</a>
     </div>
 
     <div class="admin-panel">

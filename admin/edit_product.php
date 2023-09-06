@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id'])) {
     $productId = $_GET['id'];
 
     // Query to fetch the product details by ID
-    $sql = "SELECT p.id, p.name AS product_name, p.description, p.price, p.category_id, c.name AS category_name
+    $sql = "SELECT p.id, p.name AS product_name, p.description, p.price, p.category_id, c.name AS category_name, p.image_url
             FROM products AS p
             JOIN categories AS c ON p.category_id = c.id
             WHERE p.id = $productId";
@@ -44,9 +44,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $newProductPrice = $_POST['price'];
     $newProductCategoryId = $_POST['category_id'];
 
-    // Query to update the product details in the database
+    // Check if a new image file was uploaded
+    if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/'; // Directory where you want to store uploaded images
+        $uploadFile = $uploadDir . basename($_FILES['image']['name']);
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+            // Image upload was successful
+            $newProductImage = $uploadFile;
+
+            // Delete the old image file (optional)
+            $oldImage = $product['image_url'];
+            if ($oldImage && file_exists($oldImage)) {
+                unlink($oldImage);
+            }
+        } else {
+            // Image upload failed
+            // Handle the error
+            echo "Error uploading image.";
+            exit;
+        }
+    } else {
+        // No new image file was uploaded or an error occurred
+        // Keep the existing image URL
+        $newProductImage = $product['image_url'];
+    }
+
+    // Query to update the product details in the database, including the image URL
     $sql = "UPDATE products
-            SET name = '$newProductName', description = '$newProductDescription', price = $newProductPrice, category_id = $newProductCategoryId
+            SET name = '$newProductName', description = '$newProductDescription', price = $newProductPrice, category_id = $newProductCategoryId, image_url = '$newProductImage'
             WHERE id = $productId";
 
     if ($conn->query($sql) === TRUE) {
@@ -58,11 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Error updating product: " . $conn->error;
     }
 }
-
-// Close the database connection
-$conn->close();
+// ... Rest of your HTML and form ...
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,7 +93,7 @@ $conn->close();
 </head>
 <body>
     <h2>Edit Product</h2>
-    <form action="edit_product.php" method="post">
+    <form action="edit_product.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
         <label for="name">Product Name:</label>
         <input type="text" name="name" value="<?php echo $product['product_name']; ?>" required><br><br>
@@ -81,10 +104,11 @@ $conn->close();
         <label for="category_id">Category:</label>
         <!-- Replace with a dropdown list of categories, fetching categories from your database -->
         <select name="category_id" required>
-        <option value="<?php echo $product['category_id']; ?>"><?php echo $product['category_name']; ?></option>
-        <!-- Add options for other categories fetched from your database -->
-     </select><br><br>
-
+            <option value="<?php echo $product['category_id']; ?>"><?php echo $product['category_name']; ?></option>
+            <!-- Add options for other categories fetched from your database -->
+        </select><br><br>
+        <label for="image">Product Image:</label>
+        <input type="file" name="image" accept="image/*"><br><br>
         <input type="submit" value="Update Product">
     </form>
     <br>

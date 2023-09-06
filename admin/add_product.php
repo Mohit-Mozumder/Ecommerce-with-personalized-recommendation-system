@@ -5,13 +5,16 @@
 </head>
 <body>
     <h2>Add Product</h2>
-    <form action="process_product.php" method="post">
+    <form action="process_product.php" method="post" enctype="multipart/form-data">
         <label for="name">Product Name:</label>
         <input type="text" name="name" required><br><br>
         <label for="description">Description:</label>
         <textarea name="description" required></textarea><br><br>
         <label for="price">Price:</label>
         <input type="text" name="price" required><br><br>
+        </select><br><br>
+    <label for="image">Product Image:</label>
+    <input type="file" name="image" accept="image/*" required><br><br>
         <label for="category">Category:</label>
         <select name="category" required>
             <?php
