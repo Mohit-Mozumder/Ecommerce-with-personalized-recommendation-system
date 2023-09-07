@@ -83,22 +83,54 @@ $conn->close();
         .product-card:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Style the logout button */
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; /* Remove underlines */
+        }
+
+        /* Style the logout button on hover */
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Center-align the button text */
+        .logout-button a {
+            text-decoration: none;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div class="product-container">
-        <?php
-        // Loop through products and display them in cards
-        foreach ($products as $product) {
-            echo "<div class='product-card'>";
-            echo "<div class='product-image'>";
-            echo "<img src='" . $product['image_url'] . "' alt='" . $product['product_name'] . "'>";
-            echo "</div>";
-            echo "<div class='product-title'>" . $product['product_name'] . "</div>";
-            echo "<div class='product-price'>$" . $product['price'] . "</div>";
-            echo "</div>";
-        }
-        ?>
-    </div>
+<!-- Include the navigation HTML -->
+<?php include('nav.html'); ?>
+
+<div class="product-container">
+    <?php
+    // Loop through products and display them in cards
+    foreach ($products as $product) {
+        echo "<div class='product-card'>";
+        echo "<div class='product-image'>";
+        echo "<img src='" . $product['image_url'] . "' alt='" . $product['product_name'] . "'>";
+        echo "</div>";
+        echo "<div class='product-title'>" . $product['product_name'] . "</div>";
+        echo "<div class='product-price'>$" . $product['price'] . "</div>";
+
+        // Add the "View Details" link here
+        echo "<a href='view_product.php?id=" . $product['id'] . "'><br>View Details</a>";
+        echo "</div>";
+    }
+    ?>
+</div>
+
 </body>
 </html>
